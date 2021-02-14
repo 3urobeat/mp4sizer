@@ -21,6 +21,8 @@ Open up a terminal in the new folder and install `moviepy` using pip: `python3 -
 
 ## Usage:  
 Put all your mp4 files to compress into the `files` folder.  
+> Note: Please avoid putting clips into the folder that are already below your target size as they can get bigger after compressing.  
+  
 Open the script and input the file size in MB you would like your clips to have.  
 To see more options type `help`. This will show how you can also change the framerate and resolution of your files for example.  
 
