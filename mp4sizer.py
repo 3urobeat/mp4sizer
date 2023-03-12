@@ -61,11 +61,17 @@ else:
     maxretries = 5
 
 
+# Helper func to print diagnostic messages
+def printDiagnostics(msg):
+    if "--diagnostics" in arguments:
+        print(msg)
+
+
 # Define the export part as a function to be able to call it again if we didn't reach our targetsize on the first run
 def exportvideo(goalbitrate, iteration, difference):
     if iteration > 5: # abort after 5 tries to not cause an endless loop
         print("I wasn't able to reach the target file size in 5 attempts. Please try a higher target size.\nAborting to not cause an endless loop...")
-        sys.exit()
+        return
 
     try:
         # Export video with the calculated goalbitrate into the compressed folder and change fps if user wishes
@@ -85,18 +91,18 @@ def exportvideo(goalbitrate, iteration, difference):
         olddifference = difference
         difference = newsize / targetsize
 
-
-        if "--diagnostics" in arguments:
-            print("\ndifference: " + str(difference))
-            print(f"Calculate: {newsize} / {targetsize}")
-            print("old bitrate: " + str(goalbitrate))
+        printDiagnostics("\ndifference: " + str(difference))
+        printDiagnostics(f"Calculate: {newsize} / {targetsize}")
+        printDiagnostics("old bitrate: " + str(goalbitrate))
 
 
         # change how much of a difference the last try made and manipulate difference if the changes were only minimal
         if difference > 1 and difference - olddifference < 1: # seems like the changes didn't really cut it
-            if "--diagnostics" in arguments: print(f"\ndifference to olddifference: {difference} / {olddifference} = {difference / olddifference}")
+            printDiagnostics(f"\ndifference to olddifference: {difference} / {olddifference} = {difference / olddifference}")
+
             difference = difference + (0.2 * iteration)
-            if "--diagnostics" in arguments: print(f"modified difference: {difference}\n")
+
+            printDiagnostics(f"modified difference: {difference}\n")
 
 
         # Values to change how much the bitrate will be adjusted between tries
@@ -122,9 +128,7 @@ def exportvideo(goalbitrate, iteration, difference):
         elif difference < 0.6:
             goalbitrate = goalbitrate + 2
 
-
-        if "--diagnostics" in arguments:
-            print("new bitrate: " + str(goalbitrate))
+        printDiagnostics("new bitrate: " + str(goalbitrate))
 
 
         if difference > 0.9 and difference < 0.99999: # tolerance
@@ -149,7 +153,6 @@ for file in os.listdir(folder):
     # Get a few values to be able to calculate the bitrate we would like to reach
     origsize = os.path.getsize('./files/' + file) / 1000000 # in MB
     origclip = VideoFileClip('./files/' + file)
-    origduration = origclip.duration
 
     # Resize if the user wishes
     if "--res" in arguments:
@@ -161,7 +164,9 @@ for file in os.listdir(folder):
         origclip = vfx.resize(origclip, (newres[0], newres[1])) # pylint: disable=no-member
 
     # Calculate goalbitrate and export
-    goalbitrate = 8 * targetsize / origduration # estimated bitrate we need to have to reach the provided filesize
+    goalbitrate = 8 * targetsize / origclip.duration # estimated bitrate we need to have to reach the provided filesize
     goalbitrate = goalbitrate - 0.15 # subtract a little bit for good measures to maybe avoid unnecessary retries
+
+    printDiagnostics(f"Calculated bitrate of {goalbitrate} for current clip with length of {origclip.duration} seconds to reach a size of {targetsize} MB\n")
 
     exportvideo(goalbitrate, 1, 0)
