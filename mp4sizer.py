@@ -18,20 +18,25 @@ arguments = sys.argv
 print(f"mp4sizer by 3urobeat v{version} powered by moviepy")
 
 
-# Check if user has provided an argument (ask for arguments because the user can't provide flags when starting from a build)
+# Helper function to print help menu
+def printHelp():
+    print("    --fps Number       | Changes the fps of the output clip.")
+    print("    --res WidthxHeight | Changes the resolution of the output clip. Seperate Width and Height with a 'x'. Example: 1920x1080")
+    print("    --retries Number   | Changes the amount of max retries. Default: 5")
+    print("    --no-retry         | The script won't retry to compress further even if the first run didn't reach the target size.")
+    print("    --diagnostics      | Shows what the script is calculating.\n")
+
+
+# Check if user did not provide an argument and ask for input
 if len(arguments) < 2:
-    print("Please provide a target file size in MB as number to start\n(and other optional arguments if you wish. Type help to see all options.):")
-    userinput = input().split(" ")
+    print("\nPlease provide a target file size in MB as number to start\n(and other optional arguments if you wish. Type help to see all options.):")
+    userinput = input().split(" ") # Wait for new input
 
     # Check if user requested help menu
     if "help" in userinput:
         print("\nPlease provide a file size in MB as number as the first argument.\nOptional arguments:")
-        print("    --fps Number       | Changes the fps of the output clip.")
-        print("    --res WidthxHeight | Changes the resolution of the output clip. Seperate Width and Height with a 'x'. Example: 1920x1080")
-        print("    --retries Number   | Changes the amount of max retries. Default: 5")
-        print("    --no-retry         | The script won't retry to compress further even if the first run didn't reach the target size.")
-        print("    --diagnostics      | Shows what the script is calculating.\n")
-        userinput = input().split(" ")
+        printHelp()
+        userinput = input().split(" ") # Wait for new input
 
     # Push all new arguments
     for e in userinput:
@@ -44,6 +49,13 @@ if len(arguments) < 2:
 
 # Remove the first argument if it is the file name
 if "mp4sizer" in arguments[0]: arguments.pop(0)
+
+
+# Check if user only asked for help menu
+if "--help" in arguments or "-h" in arguments:
+    print("")
+    printHelp()
+    sys.exit()
 
 
 # Check if targetsize is a valid number
