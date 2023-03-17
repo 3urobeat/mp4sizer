@@ -83,15 +83,18 @@ except:
 
 # Check if user set a custom amount of retries
 if "--retries" in arguments: 
-    maxretries = int(arguments[arguments.index("--fps") + 1])
+    maxretries = int(arguments[arguments.index("--retries") + 1])
 else: 
     maxretries = 5
 
 
 # Define the export part as a function to allow for recursion
 def exportvideo(goalbitrate, iteration, difference):
-    if iteration > 5: # abort after 5 tries to not cause an endless loop
-        print("I wasn't able to reach the target file size in 5 attempts. Please try a higher target size.\nAborting to avoid an endless loop...")
+    if iteration > maxretries: # abort after maxretries tries to not cause an endless loop
+        if "--retries" in arguments:
+            print(f"Ignoring retry to not exceed the specified amount of {maxretries} max retry attempt(s).")
+        else:
+            print(f"I wasn't able to reach the target file size in {maxretries} attempts. Please try a higher target size.\nAborting to avoid an endless loop...")
         return
 
     try:
