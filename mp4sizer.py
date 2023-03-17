@@ -133,6 +133,8 @@ def exportvideo(goalbitrate, iteration, difference):
 
         if difference > 0.9 and difference < 0.99999: # tolerance
             print(f"\n'{file}' was successfully compressed from {origsize} MB to {newsize} MB in {iteration} try/tries.")
+        elif "--no-retry" in arguments:
+            print(f"\n'{file}' was compressed from {origsize} MB to {newsize} MB. No retries will be made as '--no-retry' flag is set.")
         else:
             print(f"\n'{file}' is {newsize} MB and didn't reach {targetsize} in try {iteration}.\nTrying again with a slightly changed bitrate...")
             exportvideo(goalbitrate, iteration + 1, difference) # check again
