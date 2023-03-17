@@ -14,8 +14,12 @@ out_folder = "./compressed/"
 arguments = sys.argv
 
 
+# Dict to quickly get color codes
+colors = { "reset": "\x1b[0m", "red": "\x1b[31m", "cyan": "\x1b[36m", "green": "\x1b[32m" }
+
+
 # Entry point
-print(f"mp4sizer by 3urobeat v{version} powered by moviepy & ffmpeg")
+print(f"{colors['cyan']}mp4sizer{colors['reset']} by 3urobeat v{version} powered by moviepy & ffmpeg")
 
 
 # Helper function to keep terminal window open on Windows when exiting so that the user has a chance to read any error messages
@@ -44,7 +48,7 @@ def printHelp():
 
 # Check if user did not provide an argument and ask for input
 if len(arguments) < 2:
-    print("\nPlease provide a target file size in MB as number to start\n(and other optional arguments if you wish. Type help to see all options.):")
+    print("\nPlease provide a target file size in MB as number to start and other optional arguments if you wish. Type help to see all options:")
     userinput = input().split(" ") # Wait for new input
 
     # Check if user requested help menu
@@ -58,7 +62,7 @@ if len(arguments) < 2:
         arguments.append(e)
 
     if len(arguments) < 2:
-        print("Please provide a target filesize in Megabytes as the first argument!")
+        print(f"{colors['red']}Please provide a target filesize in Megabytes as the first argument!{colors['reset']}")
         sysExit()
 
 
@@ -77,7 +81,7 @@ if "--help" in arguments or "-h" in arguments:
 try:
     targetsize = float(arguments[0])
 except:
-    print("Your targetsize argument doesn't seem to be a valid number.")
+    print(f"{colors['red']}Your targetsize argument doesn't seem to be a valid number!{colors['reset']}")
     sysExit() # stop here
 
 
@@ -92,9 +96,9 @@ else:
 def exportvideo(goalbitrate, iteration, difference):
     if iteration > maxretries: # abort after maxretries tries to not cause an endless loop
         if "--retries" in arguments:
-            print(f"Ignoring retry to not exceed the specified amount of {maxretries} max retry attempt(s).")
+            print(f"{colors['red']}Ignoring retry to not exceed the specified amount of {maxretries} max retry attempt(s).{colors['reset']}")
         else:
-            print(f"I wasn't able to reach the target file size in {maxretries} attempts. Please try a higher target size.\nAborting to avoid an endless loop...")
+            print(f"{colors['red']}I wasn't able to reach the target file size in {maxretries} attempts. Please try a higher target size.\nAborting to avoid an endless loop...{colors['reset']}")
         return
 
     try:
@@ -102,7 +106,7 @@ def exportvideo(goalbitrate, iteration, difference):
         newfps = None
         if "--fps" in arguments:
             newfps = int(arguments[arguments.index("--fps") + 1])
-            print(f"Changing the framerate from {origclip.fps} to {newfps}...")
+            print(f"{colors['cyan']}Changing the framerate from {origclip.fps} to {newfps}...{colors['reset']}")
 
         # Compress file
         origclip.write_videofile('./compressed/' + file, bitrate=f"{goalbitrate * 1000}k", preset="medium", fps=newfps)
@@ -117,13 +121,13 @@ def exportvideo(goalbitrate, iteration, difference):
 
         # Either retry with changed bitrate or exit if are close enough to our target size
         if difference > 0.925 and difference < 1: # Check if we are within tolerance
-            print(f"\n'{file}' was successfully compressed from {origsize} MB to {newsize} MB in {iteration} try/tries.")
+            print(f"\n'{file}' {colors['green']}was successfully compressed{colors['reset']} from {origsize} MB to {newsize} MB in {iteration} try/tries.")
 
         elif "--no-retry" in arguments: # Check if we should not retry
-            print(f"\n'{file}' was compressed from {origsize} MB to {newsize} MB. No retries will be made as '--no-retry' flag is set.")
+            print(f"\n'{file}' {colors['green']}was compressed{colors['reset']} from {origsize} MB to {newsize} MB. No retries will be made as '--no-retry' flag is set.")
 
         else: # Retry
-            print(f"\n'{file}' is {newsize} MB and didn't reach {targetsize} in try {iteration}.\nTrying again with a slightly changed bitrate...")
+            print(f"\n'{file}' is {newsize} MB and didn't reach {targetsize} in try {iteration}.\n{colors['cyan']}Trying again with a slightly changed bitrate...{colors['reset']}")
 
             # Manipulate bitrate based on difference
             goalbitrate += (8 * (targetsize - newsize) / origclip.duration) # Calculate bitrate of difference between old and new size and subtract it from goalbitrate
@@ -131,7 +135,7 @@ def exportvideo(goalbitrate, iteration, difference):
 
             # Check if goalbitrate is negative and abort as we won't be able to reach the targetsize for this file
             if goalbitrate < 0:
-                print(f"\n'{file}' is unable to reach {targetsize} MB. Please try again with a higher target file size.")
+                print(f"\n'{file}' {colors['red']}is unable to reach {colors['reset']}{targetsize} MB. {colors['red']}Please try again with a higher target file size.{colors['reset']}")
                 return
 
             printDiagnostics(f"\nCalculated bitrate of {goalbitrate} for try {iteration + 1}...")
@@ -140,7 +144,7 @@ def exportvideo(goalbitrate, iteration, difference):
             exportvideo(goalbitrate, iteration + 1, difference)
 
     except:
-        print(f"Couldn't export '{file}'. Please try again.")
+        print(f"{colors['red']}Couldn't export {colors['reset']}'{file}'{colors['red']}. Please try again.{colors['reset']}")
 
 
 # Iterate over all files in files folder
@@ -148,7 +152,7 @@ for file in os.listdir(folder):
     print("") # print empty line
 
     if "mp4" not in file: # check if file is not a valid video file
-        if file != ".input" and file != ".output": print(f"File '{file}' is not a mp4! Skipping...")
+        if file != ".input" and file != ".output": print(f"{colors['red']}File {colors['reset']}'{file}' {colors['red']}is not a mp4! Skipping...{colors['reset']}")
         continue
 
     # Get a few values to be able to calculate the bitrate we would like to reach
@@ -158,7 +162,7 @@ for file in os.listdir(folder):
     # Resize if the user wishes
     if "--res" in arguments:
         newres = arguments[arguments.index("--res") + 1].split("x")
-        print(f"Resizing the clip from {origclip.size[0]}x{origclip.size[1]} to {newres[0]}x{newres[1]}")
+        print(f"{colors['cyan']}Resizing the clip from{colors['reset']} {origclip.size[0]}x{origclip.size[1]} to {newres[0]}x{newres[1]}")
 
         # RESIZE!
         import moviepy.video.fx.all as vfx
