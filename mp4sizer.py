@@ -94,7 +94,7 @@ def exportvideo(goalbitrate, iteration, difference):
 
 
         # Compress file
-        origclip.write_videofile('./compressed/' + file, bitrate=f"{goalbitrate * 1000}k", preset="fast", fps=newfps)
+        origclip.write_videofile('./compressed/' + file, bitrate=f"{goalbitrate * 1000}k", preset="medium", fps=newfps)
 
 
         # Get new size to determine how close we got to our target size
@@ -144,8 +144,8 @@ for file in os.listdir(folder):
         origclip = vfx.resize(origclip, (newres[0], newres[1])) # pylint: disable=no-member
 
     # Calculate goalbitrate and export
-    goalbitrate = 8 * targetsize / origclip.duration # estimated bitrate we need to have to reach the provided filesize
-    goalbitrate = goalbitrate - 0.15 # subtract a little bit for good measures to maybe avoid unnecessary retries
+    goalbitrate = 8 * targetsize / origclip.duration # Estimated bitrate we need to use to reach the provided filesize
+    goalbitrate *= 0.975                             # Subtract 2.5% for good measures to maybe avoid unnecessary retries
 
     printDiagnostics(f"Calculated bitrate of {goalbitrate} for current clip with length of {origclip.duration} seconds to reach a size of {targetsize} MB\n")
 
