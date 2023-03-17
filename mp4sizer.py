@@ -15,7 +15,7 @@ arguments = sys.argv
 
 
 # Entry point
-print(f"mp4sizer by 3urobeat v{version} powered by moviepy")
+print(f"mp4sizer by 3urobeat v{version} powered by moviepy & ffmpeg")
 
 
 # Helper func to print diagnostic messages
@@ -82,7 +82,7 @@ else:
 # Define the export part as a function to be able to call it again if we didn't reach our targetsize on the first run
 def exportvideo(goalbitrate, iteration, difference):
     if iteration > 5: # abort after 5 tries to not cause an endless loop
-        print("I wasn't able to reach the target file size in 5 attempts. Please try a higher target size.\nAborting to not cause an endless loop...")
+        print("I wasn't able to reach the target file size in 5 attempts. Please try a higher target size.\nAborting to avoid an endless loop...")
         return
 
     try:
@@ -107,6 +107,8 @@ def exportvideo(goalbitrate, iteration, difference):
 
         # Calculate difference of new size to size we want to reach
         difference = newsize / targetsize
+
+        printDiagnostics(f"\nDifference of newsize to targetsize is {difference}. Accepting diff if between 0.9 & 1.0")
 
 
         # Either retry with changed bitrate or exit if are close enough to our target size
