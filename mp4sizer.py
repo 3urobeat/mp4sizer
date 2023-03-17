@@ -5,6 +5,7 @@ import os
 import sys
 import moviepy
 from moviepy.video.io.VideoFileClip import VideoFileClip
+from colorama import just_fix_windows_console
 
 
 # Config
@@ -12,6 +13,11 @@ version = "1.1"
 folder = "./files/"
 out_folder = "./compressed/"
 arguments = sys.argv
+
+
+# Ask colorama to fix colors if on Windows because it doesn't work otherwise for some stupid reason (I hate Windows)
+if sys.platform == "win32":
+    just_fix_windows_console()
 
 
 # Dict to quickly get color codes
