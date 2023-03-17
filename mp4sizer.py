@@ -18,6 +18,12 @@ arguments = sys.argv
 print(f"mp4sizer by 3urobeat v{version} powered by moviepy")
 
 
+# Helper func to print diagnostic messages
+def printDiagnostics(msg):
+    if "--diagnostics" in arguments:
+        print(msg)
+
+
 # Helper function to print help menu
 def printHelp():
     print("    --fps Number       | Changes the fps of the output clip.")
@@ -71,12 +77,6 @@ if "--retries" in arguments:
     maxretries = int(arguments[arguments.index("--fps") + 1])
 else: 
     maxretries = 5
-
-
-# Helper func to print diagnostic messages
-def printDiagnostics(msg):
-    if "--diagnostics" in arguments:
-        print(msg)
 
 
 # Define the export part as a function to be able to call it again if we didn't reach our targetsize on the first run
