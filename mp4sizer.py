@@ -18,6 +18,15 @@ arguments = sys.argv
 print(f"mp4sizer by 3urobeat v{version} powered by moviepy & ffmpeg")
 
 
+# Helper function to keep terminal window open on Windows when exiting so that the user has a chance to read any error messages
+def sysExit():
+    if sys.platform == "win32":
+        print("\nPress any key to exit...")
+        input()
+
+    sys.exit()
+
+
 # Helper func to print diagnostic messages
 def printDiagnostics(msg):
     if "--diagnostics" in arguments:
@@ -50,7 +59,7 @@ if len(arguments) < 2:
 
     if len(arguments) < 2:
         print("Please provide a target filesize in Megabytes as the first argument!")
-        sys.exit()
+        sysExit()
 
 
 # Remove the first argument if it is the file name
@@ -61,7 +70,7 @@ if "mp4sizer" in arguments[0]: arguments.pop(0)
 if "--help" in arguments or "-h" in arguments:
     print("")
     printHelp()
-    sys.exit()
+    sysExit()
 
 
 # Check if targetsize is a valid number
@@ -69,7 +78,7 @@ try:
     targetsize = float(arguments[0])
 except:
     print("Your targetsize argument doesn't seem to be a valid number.")
-    sys.exit() # stop here
+    sysExit() # stop here
 
 
 # Check if user set a custom amount of retries
