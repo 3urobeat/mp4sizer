@@ -94,6 +94,8 @@ else:
 
 # Define the export part as a function to allow for recursion
 def exportvideo(goalbitrate, iteration, difference):
+    print("") # Empty line time
+
     if iteration > maxretries: # abort after maxretries tries to not cause an endless loop
         if "--retries" in arguments:
             print(f"{colors['red']}Ignoring retry to not exceed the specified amount of {maxretries} max retry attempt(s).{colors['reset']}")
@@ -111,23 +113,25 @@ def exportvideo(goalbitrate, iteration, difference):
         # Compress file
         origclip.write_videofile('./compressed/' + file, bitrate=f"{goalbitrate * 1000}k", preset="medium", fps=newfps)
 
+        print("") # Empty line time (again)
+
         # Get new size to determine how close we got to our target size
         newsize = os.path.getsize('./compressed/' + file) / 1000000 # in MB
 
         # Calculate difference of new size to size we want to reach
         difference = newsize / targetsize
 
-        printDiagnostics(f"\nDifference of newsize to targetsize is {difference}. Accepting diff if between 0.9 & 1.0")
+        printDiagnostics(f"Difference of newsize to targetsize is {difference}. Accepting diff if between 0.9 & 1.0")
 
         # Either retry with changed bitrate or exit if are close enough to our target size
         if difference > 0.925 and difference < 1: # Check if we are within tolerance
-            print(f"\n'{file}' {colors['green']}was successfully compressed{colors['reset']} from {origsize} MB to {newsize} MB in {iteration} try/tries.")
+            print(f"'{file}' {colors['green']}was successfully compressed{colors['reset']} from {origsize} MB to {newsize} MB in {iteration} try/tries.")
 
         elif "--no-retry" in arguments: # Check if we should not retry
-            print(f"\n'{file}' {colors['green']}was compressed{colors['reset']} from {origsize} MB to {newsize} MB. No retries will be made as '--no-retry' flag is set.")
+            print(f"'{file}' {colors['green']}was compressed{colors['reset']} from {origsize} MB to {newsize} MB. No retries will be made as '--no-retry' flag is set.")
 
         else: # Retry
-            print(f"\n'{file}' is {newsize} MB and didn't reach {targetsize} in try {iteration}.\n{colors['cyan']}Trying again with a slightly changed bitrate...{colors['reset']}")
+            print(f"'{file}' is {newsize} MB and didn't reach {targetsize} in try {iteration}.\n{colors['cyan']}Trying again with a slightly changed bitrate...{colors['reset']}")
 
             # Manipulate bitrate based on difference
             goalbitrate += (8 * (targetsize - newsize) / origclip.duration) # Calculate bitrate of difference between old and new size and subtract it from goalbitrate
@@ -135,10 +139,10 @@ def exportvideo(goalbitrate, iteration, difference):
 
             # Check if goalbitrate is negative and abort as we won't be able to reach the targetsize for this file
             if goalbitrate < 0:
-                print(f"\n'{file}' {colors['red']}is unable to reach {colors['reset']}{targetsize} MB. {colors['red']}Please try again with a higher target file size.{colors['reset']}")
+                print(f"'{file}' {colors['red']}is unable to reach {colors['reset']}{targetsize} MB. {colors['red']}Please try again with a higher target file size.{colors['reset']}")
                 return
 
-            printDiagnostics(f"\nCalculated bitrate of {goalbitrate} for try {iteration + 1}...")
+            printDiagnostics(f"Calculated bitrate of {goalbitrate} for try {iteration + 1}...")
 
             # Run again with modified bitrate
             exportvideo(goalbitrate, iteration + 1, difference)
@@ -172,6 +176,6 @@ for file in os.listdir(folder):
     goalbitrate = 8 * targetsize / origclip.duration # Estimated bitrate we need to use to reach the provided filesize
     goalbitrate *= 0.975                             # Subtract 2.5% for good measures to maybe avoid unnecessary retries
 
-    printDiagnostics(f"Calculated bitrate of {goalbitrate} for {origsize} MB file with length of {origclip.duration} seconds to reach a size of {targetsize} MB\n")
+    printDiagnostics(f"Calculated bitrate of {goalbitrate} for {origsize} MB file with length of {origclip.duration} seconds to reach a size of {targetsize} MB")
 
     exportvideo(goalbitrate, 1, 0)
