@@ -96,53 +96,20 @@ def exportvideo(goalbitrate, iteration, difference):
         # Compress file
         origclip.write_videofile('./compressed/' + file, bitrate=f"{goalbitrate * 1000}k", preset="fast", fps=newfps)
 
+
+        # Get new size to determine how close we got to our target size
         newsize = os.path.getsize('./compressed/' + file) / 1000000 # in MB
 
 
-        # Make bitrate changing a bit more dynamic by checking how great the difference is
-        olddifference = difference
+        # Calculate difference of new size to target size and adjust bitrate accordingly
+        
+
+
+        # Calculate difference of new size to size we want to reach
         difference = newsize / targetsize
 
-        printDiagnostics("\ndifference: " + str(difference))
-        printDiagnostics(f"Calculate: {newsize} / {targetsize}")
-        printDiagnostics("old bitrate: " + str(goalbitrate))
 
-
-        # change how much of a difference the last try made and manipulate difference if the changes were only minimal
-        if difference > 1 and difference - olddifference < 1: # seems like the changes didn't really cut it
-            printDiagnostics(f"\ndifference to olddifference: {difference} / {olddifference} = {difference / olddifference}")
-
-            difference = difference + (0.2 * iteration)
-
-            printDiagnostics(f"modified difference: {difference}\n")
-
-
-        # Values to change how much the bitrate will be adjusted between tries
-        # Since Python doesn't have a nice switch case structure I'm just going to use some ugly elif's
-        if difference > 1.3:
-            goalbitrate = goalbitrate - 3
-        elif difference > 1.25 and difference < 1.3:
-            goalbitrate = goalbitrate - 1.5
-        elif difference > 1.2 and difference < 1.25:
-            goalbitrate = goalbitrate - 1.2
-        elif difference > 1.15 and difference < 1.2:
-            goalbitrate = goalbitrate - 0.9
-        elif difference > 1.1 and difference < 1.15:
-            goalbitrate = goalbitrate - 0.5
-        elif difference > 0.99 and difference < 1.1:
-            goalbitrate = goalbitrate - 0.2
-        elif difference > 0.8 and difference < 0.85:
-            goalbitrate = goalbitrate + 0.2
-        elif difference > 0.7 and difference < 0.8:
-            goalbitrate = goalbitrate + 0.5
-        elif difference > 0.6 and difference < 0.7:
-            goalbitrate = goalbitrate + 1
-        elif difference < 0.6:
-            goalbitrate = goalbitrate + 2
-
-        printDiagnostics("new bitrate: " + str(goalbitrate))
-
-
+        # Either retry with changed bitrate or exit if are close enough to our target size
         if difference > 0.9 and difference < 0.99999: # tolerance
             print(f"\n'{file}' was successfully compressed from {origsize} MB to {newsize} MB in {iteration} try/tries.")
         elif "--no-retry" in arguments:
@@ -150,7 +117,6 @@ def exportvideo(goalbitrate, iteration, difference):
         else:
             print(f"\n'{file}' is {newsize} MB and didn't reach {targetsize} in try {iteration}.\nTrying again with a slightly changed bitrate...")
             exportvideo(goalbitrate, iteration + 1, difference) # check again
-
 
     except:
         print(f"Couldn't export '{file}'. Please try again.")
