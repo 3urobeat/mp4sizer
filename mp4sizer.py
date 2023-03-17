@@ -9,7 +9,7 @@ from colorama import just_fix_windows_console
 
 
 # Config
-version = "1.1"
+version = "1.2"
 folder = "./files/"
 out_folder = "./compressed/"
 arguments = sys.argv
