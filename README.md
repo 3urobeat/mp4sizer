@@ -22,7 +22,10 @@ If you are using Linux then you should be able to download python3 from your dis
 Open up a terminal in the new folder and install the dependencies using pip, preferably inside a python virtual environment:  
 ```bash
 python -m venv ./venv
-./venv/bin/pip install moviepy opencv-python colorama`
+# On Linux
+./venv/bin/pip install moviepy opencv-python colorama
+# On Windows
+.\venv\Scripts\pip.exe install moviepy opencv-python colorama
 ```
 
 &nbsp;

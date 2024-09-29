@@ -26,7 +26,7 @@ from colorama import just_fix_windows_console
 
 
 # Config
-version = "1.2"
+version = "1.3"
 folder = "./files/"
 out_folder = "./compressed/"
 arguments = sys.argv
