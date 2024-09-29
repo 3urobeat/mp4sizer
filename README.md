@@ -11,15 +11,15 @@ It is also possible to easily change the framerate and resolution of all clips.
 You can either use a build (easy) or use it from source (a bit more complicated).  
 
 ### Use a build:  
-[Download the latest release](https://github.com/HerrEurobeat/mp4sizer/releases) for your platform and extract the folder.  
+[Download the latest release](https://github.com/3urobeat/mp4sizer/releases) for your platform and extract the folder.  
 > On Linux you have to run the executable from/in a Terminal.  
 
 ### Use from Source:  
 Make sure to have [Python 3](https://www.python.org/downloads/) (`Windows x86-64 executeable installer`) installed.  
 If you are using Linux then you should be able to download python3 from your distribution's packet manager.  
 
-[Download this script](https://github.com/HerrEurobeat/mp4sizer/archive/master.zip) and extract the folder.  
 Open up a terminal in the new folder and install `moviepy` using pip: `python3 -m pip install moviepy`.  
+[Download this script](https://github.com/3urobeat/mp4sizer/archive/master.zip) and extract the folder.  
 
 &nbsp;
 
