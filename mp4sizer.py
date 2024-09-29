@@ -4,7 +4,7 @@ Project: mp4sizer
 Created Date: 2021-01-29 22:27:00
 Author: 3urobeat
 
-Last Modified: 2024-09-29 13:59:17
+Last Modified: 2024-09-29 14:08:03
 Modified By: 3urobeat
 
 Copyright (c) 2021 - 2024 3urobeat <https://github.com/3urobeat>
@@ -113,9 +113,9 @@ except:
 
 
 # Check if user set a custom amount of retries
-if "--retries" in arguments: 
+if "--retries" in arguments:
     maxretries = int(arguments[arguments.index("--retries") + 1])
-else: 
+else:
     maxretries = 5
 
 
@@ -174,8 +174,9 @@ def exportvideo(goalbitrate, iteration, difference):
             # Run again with modified bitrate
             exportvideo(goalbitrate, iteration + 1, difference)
 
-    except:
+    except Exception as err:
         print(f"{colors['red']}Couldn't export {colors['reset']}'{file}'{colors['red']}. Please try again.{colors['reset']}")
+        print(f"{colors['red']}Error:{colors['reset']} {err}")
 
 
 # Iterate over all files in files folder
