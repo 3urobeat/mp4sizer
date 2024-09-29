@@ -5,6 +5,8 @@ It is also possible to easily change the framerate and resolution of all clips.
 
 **Use case example:** Get a bunch of video clips below 8 MB to be able to send them on Discord.  
 
+&nbsp;
+
 ## Download & Install:  
 You can either use a build (easy) or use it from source (a bit more complicated).  
 
@@ -19,6 +21,8 @@ If you are using Linux then you should be able to download python3 from your dis
 [Download this script](https://github.com/HerrEurobeat/mp4sizer/archive/master.zip) and extract the folder.  
 Open up a terminal in the new folder and install `moviepy` using pip: `python3 -m pip install moviepy`.  
 
+&nbsp;
+
 ## Usage:  
 Put all your mp4 files to compress into the `files` folder.  
 > Note: Please avoid putting clips into the folder that are already below your target size as they can get bigger after compressing.  
@@ -26,8 +30,13 @@ Put all your mp4 files to compress into the `files` folder.
 Open the script and input the file size in MB you would like your clips to have.  
 To see more options type `help`. This will show how you can also change the framerate and resolution of your files for example.  
 
+When running the binary from a terminal, the syntax looks like this:  
+`./mp4sizer <size_in_MB> [options]`, e.g. `./mp4sizer 8 --res 1920x1080`
+
 The script will now try to get all your clips as close to the target file size you chose and output them into the `compressed` folder.  
 > Disclaimer: If your output files look bad afterwards please consider cutting them shorter or raising your target file size.  
 
-### Additional information:  
+&nbsp;
+
+## Additional information:  
 `moviepy` does seem to only support CPU Encoding (at least for me on Linux) so bigger files might take longer.  

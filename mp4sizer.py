@@ -4,7 +4,7 @@ Project: mp4sizer
 Created Date: 2021-01-29 22:27:00
 Author: 3urobeat
 
-Last Modified: 2024-09-29 13:26:14
+Last Modified: 2024-09-29 13:59:17
 Modified By: 3urobeat
 
 Copyright (c) 2021 - 2024 3urobeat <https://github.com/3urobeat>
@@ -62,6 +62,10 @@ def printDiagnostics(msg):
 
 # Helper function to print help menu
 def printHelp():
+    print("Usage:")
+    print("     mp4sizer <size_in_MB> [options]")
+    print("")
+    print("Options:")
     print("    --fps Number       | Changes the fps of the output clip.")
     print("    --res WidthxHeight | Changes the resolution of the output clip. Seperate Width and Height with a 'x'. Example: 1920x1080")
     print("    --retries Number   | Changes the amount of max retries. Default: 5")
